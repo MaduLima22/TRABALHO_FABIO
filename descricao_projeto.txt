@@ -1,0 +1,84 @@
+TRABALHO DE DESENVOLVIMENTO DE APLICAÇÃO CRUD EM PYTHON
+==========================================================
+
+TEMA ESCOLHIDO: Gerenciador de Afazeres Semanais
+
+---------------------------------------------------------
+
+O QUE O SISTEMA FAZ:
+
+Este sistema permite gerenciar uma rotina semanal de afazeres/tarefas 
+de forma simples e organizada. O usuário pode:
+
+• Adicionar novos afazeres indicando descrição, dia da semana e horário
+• Visualizar todos os afazeres cadastrados
+• Buscar um afazer específico pelo ID
+• Atualizar informações de afazeres (descrição, dia, horário)
+• Marcar afazeres como concluídos ou pendentes
+• Deletar afazeres que não são mais necessários
+
+O objetivo é ajudar na organização da rotina diária, permitindo 
+visualizar rapidamente o que precisa ser feito em cada dia da semana.
+
+---------------------------------------------------------
+
+COMO O CRUD FOI APLICADO:
+
+✓ CREATE (Criar):
+  Função criar() - Adiciona novos afazeres à lista, solicitando 
+  descrição, dia da semana e horário. O ID é gerado automaticamente 
+  usando len(lista) + 1.
+
+✓ READ (Ler):
+  - Função listar() - Exibe todos os afazeres cadastrados com 
+    formatação organizada e indicação de status (concluído/pendente)
+  - Função ler() - Busca e retorna um afazer específico pelo ID
+
+✓ UPDATE (Atualizar):
+  Função atualizar() - Permite modificar descrição, dia da semana, 
+  horário ou status de conclusão de um afazer existente.
+
+✓ DELETE (Deletar):
+  Função deletar() - Remove um afazer da lista após confirmação 
+  do usuário.
+
+✓ PERSISTÊNCIA:
+  - Função carregar() - Lê os dados do arquivo JSON ao iniciar
+  - Função salvar() - Grava os dados no arquivo JSON após 
+    modificações
+
+---------------------------------------------------------
+
+ESTRUTURAS DE DADOS UTILIZADAS:
+
+• LISTA: Armazena todos os afazeres (lista_afazeres)
+• DICIONÁRIO: Cada afazer é representado por um dicionário com 
+  as chaves: id, descricao, dia_semana, horario e concluido
+• ARQUIVO JSON: Arquivo "afazeres.json" para armazenamento persistente
+
+---------------------------------------------------------
+
+TRATAMENTO DE ERROS:
+
+O sistema implementa tratamento para:
+• IDs inválidos (não numéricos)
+• IDs inexistentes
+• Campos obrigatórios vazios (descrição e horário)
+• Opções de menu inválidas
+
+---------------------------------------------------------
+
+COMO USAR:
+
+1. Execute o arquivo app.py
+2. Use o menu interativo:
+   - Opção 1: Ver todos os afazeres
+   - Opção 2: Adicionar novo afazer
+   - Opção 3: Buscar afazer por ID
+   - Opção 4: Editar afazer
+   - Opção 5: Excluir afazer
+   - Opção 0: Sair do programa
+
+3. Os dados são salvos automaticamente no arquivo afazeres.json
+
+==========================================================

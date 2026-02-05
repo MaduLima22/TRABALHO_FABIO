@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "descricao": "Fazer exercícios físicos",
+    "dia_semana": "Segunda-feira",
+    "horario": "07:00",
+    "concluido": false
+  },
+  {
+    "id": 2,
+    "descricao": "Estudar Python",
+    "dia_semana": "Terça-feira",
+    "horario": "19:00",
+    "concluido": true
+  },
+  {
+    "id": 3,
+    "descricao": "Fazer compras do mercado",
+    "dia_semana": "Sábado",
+    "horario": "10:00",
+    "concluido": false
+  },
+  {
+    "id": 4,
+    "descricao": "Jantar",
+    "dia_semana": "Quarta-feira",
+    "horario": "11:00",
+    "concluido": false
+  }
+]
