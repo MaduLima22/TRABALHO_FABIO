@@ -19,6 +19,33 @@ def salvar(lista):
         json.dump(lista, arquivo, indent=2, ensure_ascii=False)
     print("✓ Dados salvos com sucesso!")
 
+def formatar_horario(horario_input):
+    """Formata o horário para o padrão HH:MM"""
+    horario_input = horario_input.strip()
+    
+    # Se já está no formato HH:MM ou H:MM
+    if ":" in horario_input:
+        partes = horario_input.split(":")
+        if len(partes) == 2:
+            try:
+                hora = int(partes[0])
+                minuto = int(partes[1])
+                if 0 <= hora <= 23 and 0 <= minuto <= 59:
+                    return f"{hora:02d}:{minuto:02d}"
+            except ValueError:
+                return None
+        return None
+    
+    # Se é apenas um número (hora)
+    try:
+        hora = int(horario_input)
+        if 0 <= hora <= 23:
+            return f"{hora:02d}:00"
+    except ValueError:
+        return None
+    
+    return None
+
 def ordenar_afazeres(lista):
     """Ordena a lista por dia da semana e horário"""
     # Mapeamento de dias da semana para ordenação
@@ -88,12 +115,18 @@ def criar(lista):
         return
 
     # Solicita horário
-    horario = input("Horário (ex: 08:00, ou 0 para voltar): ").strip()
-    if horario == "0":
+    horario_input = input("Horário (ex: 8, 14, 08:30, ou 0 para voltar): ").strip()
+    if horario_input == "0":
         print("❌ Operação cancelada. Voltando ao menu...")
         return
-    if not horario:
+    if not horario_input:
         print("❌ O horário não pode estar vazio!")
+        return
+    
+    # Formata o horário
+    horario = formatar_horario(horario_input)
+    if horario is None:
+        print("❌ Horário inválido! Use formato: 8 ou 08:30 (hora entre 0-23)")
         return
 
     # Gera ID automático
@@ -111,6 +144,7 @@ def criar(lista):
     lista.append(novo_item)
     salvar(lista)
     print(f"\n✓ Afazer '{descricao}' adicionado com ID {novo_id}!")
+    print(f"  Horário formatado: {horario}")
 
 def ler(lista, id_busca):
     """Busca e retorna um afazer pelo ID"""
@@ -194,16 +228,22 @@ def atualizar(lista):
             return
 
     elif opcao == "3":
-        novo_horario = input("Novo horário (ou 0 para cancelar): ").strip()
-        if novo_horario == "0":
+        horario_input = input("Novo horário (ex: 8, 14, 08:30, ou 0 para cancelar): ").strip()
+        if horario_input == "0":
             print("❌ Operação cancelada.")
             return
-        if novo_horario:
-            item["horario"] = novo_horario
-            print("✓ Horário atualizado!")
-        else:
+        if not horario_input:
             print("❌ Horário não pode estar vazio!")
             return
+        
+        # Formata o horário
+        novo_horario = formatar_horario(horario_input)
+        if novo_horario is None:
+            print("❌ Horário inválido! Use formato: 8 ou 08:30 (hora entre 0-23)")
+            return
+        
+        item["horario"] = novo_horario
+        print(f"✓ Horário atualizado para: {novo_horario}")
 
     elif opcao == "4":
         item["concluido"] = not item["concluido"]
