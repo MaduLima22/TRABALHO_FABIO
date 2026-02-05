@@ -288,6 +288,34 @@ def deletar(lista):
     else:
         print("❌ Operação cancelada.")
 
+def deletar_todos(lista):
+    """Remove todos os afazeres da lista"""
+    print("\n🚨 APAGAR TODOS OS AFAZERES")
+    print("-"*40)
+    
+    if len(lista) == 0:
+        print("❌ Não há afazeres para deletar.")
+        return
+    
+    print(f"\n⚠️ ATENÇÃO! Você tem {len(lista)} afazer(es) cadastrado(s).")
+    print("⚠️ Esta ação irá deletar TODOS os afazeres permanentemente!")
+    print("\nEsta ação NÃO pode ser desfeita!")
+    
+    confirma1 = input("\nDigite 'DELETAR TUDO' para confirmar: ").strip()
+    
+    if confirma1 == "DELETAR TUDO":
+        confirma2 = input("\nTem certeza absoluta? Digite 'sim' para confirmar: ").strip().lower()
+        
+        if confirma2 == "sim":
+            quantidade = len(lista)
+            lista.clear()
+            salvar(lista)
+            print(f"\n✓ Todos os {quantidade} afazeres foram deletados com sucesso!")
+        else:
+            print("❌ Operação cancelada.")
+    else:
+        print("❌ Operação cancelada.")
+
 # ========== MENU PRINCIPAL ==========
 
 def menu():
@@ -303,6 +331,7 @@ def menu():
         print("3 - Ler afazer por ID")
         print("4 - Atualizar afazer")
         print("5 - Deletar afazer")
+        print("6 - Apagar todos os afazeres")
         print("0 - Sair")
         print("="*60)
 
@@ -341,6 +370,9 @@ def menu():
 
         elif opcao == "5":
             deletar(lista_afazeres)
+
+        elif opcao == "6":
+            deletar_todos(lista_afazeres)
 
         elif opcao == "0":
             print("\n👋 Até logo! Boa sorte com seus afazeres!")
