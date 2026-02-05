@@ -19,16 +19,35 @@ def salvar(lista):
         json.dump(lista, arquivo, indent=2, ensure_ascii=False)
     print("✓ Dados salvos com sucesso!")
 
+def ordenar_afazeres(lista):
+    """Ordena a lista por dia da semana e horário"""
+    # Mapeamento de dias da semana para ordenação
+    ordem_dias = {
+        "Segunda-feira": 1,
+        "Terça-feira": 2,
+        "Quarta-feira": 3,
+        "Quinta-feira": 4,
+        "Sexta-feira": 5,
+        "Sábado": 6,
+        "Domingo": 7
+    }
+    
+    # Ordena primeiro por dia da semana, depois por horário
+    return sorted(lista, key=lambda x: (ordem_dias.get(x['dia_semana'], 999), x['horario']))
+
 def listar(lista):
-    """Lista todos os afazeres"""
+    """Lista todos os afazeres ordenados por dia da semana e horário"""
     if len(lista) == 0:
         print("\n📋 Nenhum afazer cadastrado ainda.")
         return
 
+    # Ordena a lista antes de exibir
+    lista_ordenada = ordenar_afazeres(lista)
+
     print("\n" + "="*60)
-    print("📋 SEUS AFAZERES SEMANAIS")
+    print("📋 SEUS AFAZERES SEMANAIS (Ordenados por Dia e Horário)")
     print("="*60)
-    for item in lista:
+    for item in lista_ordenada:
         status = "✓" if item["concluido"] else "○"
         print(f"[{status}] ID: {item['id']} | Dia: {item['dia_semana']}")
         print(f"    Tarefa: {item['descricao']}")
@@ -41,7 +60,10 @@ def criar(lista):
     print("-"*40)
 
     # Solicita descrição
-    descricao = input("Descrição da tarefa: ").strip()
+    descricao = input("Descrição da tarefa (0 para voltar): ").strip()
+    if descricao == "0":
+        print("❌ Operação cancelada. Voltando ao menu...")
+        return
     if not descricao:
         print("❌ A descrição não pode estar vazia!")
         return
@@ -57,19 +79,25 @@ def criar(lista):
         "5": "Sexta-feira", "6": "Sábado", "7": "Domingo"
     }
 
-    opcao_dia = input("Escolha o dia (1-7): ").strip()
+    opcao_dia = input("Escolha o dia (1-7, ou 0 para voltar): ").strip()
+    if opcao_dia == "0":
+        print("❌ Operação cancelada. Voltando ao menu...")
+        return
     if opcao_dia not in dias:
         print("❌ Opção de dia inválida!")
         return
 
     # Solicita horário
-    horario = input("Horário (ex: 08:00): ").strip()
+    horario = input("Horário (ex: 08:00, ou 0 para voltar): ").strip()
+    if horario == "0":
+        print("❌ Operação cancelada. Voltando ao menu...")
+        return
     if not horario:
         print("❌ O horário não pode estar vazio!")
         return
 
     # Gera ID automático
-    novo_id = len(lista) + 1
+    novo_id = max([item['id'] for item in lista], default=0) + 1
 
     # Cria o novo item
     novo_item = {
@@ -96,8 +124,13 @@ def atualizar(lista):
     print("\n✏️ ATUALIZAR AFAZER")
     print("-"*40)
 
+    id_input = input("Digite o ID do afazer (0 para voltar): ").strip()
+    if id_input == "0":
+        print("❌ Operação cancelada. Voltando ao menu...")
+        return
+    
     try:
-        id_busca = int(input("Digite o ID do afazer: "))
+        id_busca = int(id_input)
     except ValueError:
         print("❌ ID inválido! Digite apenas números.")
         return
@@ -114,14 +147,29 @@ def atualizar(lista):
     print("2 - Dia da semana")
     print("3 - Horário")
     print("4 - Marcar como concluído/pendente")
+    print("0 - Voltar ao menu")
 
-    opcao = input("Escolha (1-4): ").strip()
+    opcao = input("Escolha (0-4): ").strip()
 
-    if opcao == "1":
-        nova_desc = input("Nova descrição: ").strip()
-        if nova_desc:
-            item["descricao"] = nova_desc
-            print("✓ Descrição atualizada!")
+    if opcao == "0":
+        print("❌ Operação cancelada. Voltando ao menu...")
+        return
+
+    elif opcao == "1":
+        print(f"\n📄 Descrição atual: {item['descricao']}")
+        confirma = input("Deseja alterar a descrição? (sim/não): ").strip().lower()
+        
+        if confirma == "sim":
+            nova_desc = input("Nova descrição: ").strip()
+            if nova_desc:
+                item["descricao"] = nova_desc
+                print("✓ Descrição atualizada!")
+            else:
+                print("❌ Descrição não pode estar vazia!")
+                return
+        else:
+            print("❌ Alteração cancelada.")
+            return
 
     elif opcao == "2":
         print("\nDias disponíveis:")
@@ -134,16 +182,28 @@ def atualizar(lista):
             "5": "Sexta-feira", "6": "Sábado", "7": "Domingo"
         }
 
-        opcao_dia = input("Novo dia (1-7): ").strip()
+        opcao_dia = input("Novo dia (1-7, ou 0 para cancelar): ").strip()
+        if opcao_dia == "0":
+            print("❌ Operação cancelada.")
+            return
         if opcao_dia in dias:
             item["dia_semana"] = dias[opcao_dia]
             print("✓ Dia atualizado!")
+        else:
+            print("❌ Opção inválida!")
+            return
 
     elif opcao == "3":
-        novo_horario = input("Novo horário: ").strip()
+        novo_horario = input("Novo horário (ou 0 para cancelar): ").strip()
+        if novo_horario == "0":
+            print("❌ Operação cancelada.")
+            return
         if novo_horario:
             item["horario"] = novo_horario
             print("✓ Horário atualizado!")
+        else:
+            print("❌ Horário não pode estar vazio!")
+            return
 
     elif opcao == "4":
         item["concluido"] = not item["concluido"]
@@ -161,8 +221,13 @@ def deletar(lista):
     print("\n🗑️ DELETAR AFAZER")
     print("-"*40)
 
+    id_input = input("Digite o ID do afazer para deletar (0 para voltar): ").strip()
+    if id_input == "0":
+        print("❌ Operação cancelada. Voltando ao menu...")
+        return
+    
     try:
-        id_busca = int(input("Digite o ID do afazer para deletar: "))
+        id_busca = int(id_input)
     except ValueError:
         print("❌ ID inválido! Digite apenas números.")
         return
@@ -210,8 +275,12 @@ def menu():
             criar(lista_afazeres)
 
         elif opcao == "3":
+            id_input = input("\nDigite o ID (0 para voltar): ").strip()
+            if id_input == "0":
+                continue
+            
             try:
-                id_busca = int(input("\nDigite o ID: "))
+                id_busca = int(id_input)
                 item = ler(lista_afazeres, id_busca)
                 if item:
                     print("\n" + "="*60)
